@@ -24,31 +24,42 @@ class _HomePageState extends State<HomePage> {
       final day = int.parse(dayController.text);
       final month = int.parse(monthController.text);
       final year = int.parse(yearController.text);
-
-      final birthDate = DateTime(year, month, day);
-      final currentDate = DateTime.now();
-
-      final lastBirthday = _getLastBirthday(currentDate, birthDate);
-
-      final difference = currentDate.difference(lastBirthday);
-
-      final totalMonths = difference.inDays ~/ 30;
-      final remainingDays = difference.inDays % 30;
-      int yearss = currentDate.year - birthDate.year;
-      if (currentDate.month < birthDate.month ||
-          (currentDate.month == birthDate.month &&
-              currentDate.day < birthDate.day)) {
-        yearss--;
+      if (month == 2 || month == 4 || month == 6 || month == 9 || month == 11) {
+        if (day == 31 || (month == 2 && day > 29)) {
+          _showSnackBar('Please enter a correct date');
+        } else {
+          _calculateDate(year, month, day);
+        }
+      } else {
+        _calculateDate(year, month, day);
       }
-
-      setState(() {
-        years = yearss;
-        months = totalMonths;
-        days = remainingDays;
-      });
     } else {
       _showSnackBar('Please fill all the fields');
     }
+  }
+
+  void _calculateDate(int year, int month, int day) {
+    final birthDate = DateTime(year, month, day);
+    final currentDate = DateTime.now();
+
+    final lastBirthday = _getLastBirthday(currentDate, birthDate);
+
+    final difference = currentDate.difference(lastBirthday);
+
+    final totalMonths = difference.inDays ~/ 30;
+    final remainingDays = difference.inDays % 30;
+    int yearss = currentDate.year - birthDate.year;
+    if (currentDate.month < birthDate.month ||
+        (currentDate.month == birthDate.month &&
+            currentDate.day < birthDate.day)) {
+      yearss--;
+    }
+
+    setState(() {
+      years = yearss;
+      months = totalMonths;
+      days = remainingDays;
+    });
   }
 
   bool _areFieldsFilled() {
